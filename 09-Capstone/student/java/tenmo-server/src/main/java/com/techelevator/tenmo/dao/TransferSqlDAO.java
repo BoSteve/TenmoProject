@@ -40,10 +40,10 @@ jdbcTemplate.update(addSqlTransfer, transferId, statusId, aFrom, aTo, amount);
 		List<Transfer> transferIdList = new ArrayList<Transfer>();
 		String sql = "SELECT * FROM transfers WHERE transfer_id = ?";
 		
-		SqlRowSet sqlResult = jdbcTemplate.queryForRowSet(sql, transferId);
+		SqlRowSet output = jdbcTemplate.queryForRowSet(sql, transferId);
 		
-		while (sqlResult.next()) {
-			Transfer idTransfer = AddRowToTransfer(sqlResult);
+		while (output.next()) {
+			Transfer idTransfer = AddRowToTransfer(output);
 			transferIdList.add(idTransfer);
 		}
 		// TODO Auto-generated method stub
@@ -51,12 +51,12 @@ jdbcTemplate.update(addSqlTransfer, transferId, statusId, aFrom, aTo, amount);
 	}
 
 	@Override
-	public List<Transfer> transfersByAccount(Long aFrom, Long aTo) {
+	public List<Transfer> transfersByAccount(Long accountFrom, Long accountTo) {
 
 		List<Transfer> transferList = new ArrayList<Transfer>();
 		String sqlTransfer = "SELECT * FROM transfers WHERE account_from = ? OR account_to = ?)";
 		
-		SqlRowSet output = jdbcTemplate.queryForRowSet(sqlTransfer, aFrom, aTo);
+		SqlRowSet output = jdbcTemplate.queryForRowSet(sqlTransfer, accountFrom, accountTo);
 		
 		while(output.next()) {
 		Transfer newTransfer =AddRowToTransfer(output);
@@ -69,11 +69,11 @@ jdbcTemplate.update(addSqlTransfer, transferId, statusId, aFrom, aTo, amount);
 	private Transfer AddRowToTransfer(SqlRowSet output) {
 		Transfer newTransfer = new Transfer();
 		
-		newTransfer.setTransfer_id(output.getLong("transfer_id"));
-		newTransfer.setTransfer_type_id(output.getLong("transfer_type_id"));
-		newTransfer.setTransfer_status_id(output.getLong("transfer_statu_id"));
-		newTransfer.setAccount_from(output.getLong("account_from"));
-		newTransfer.setAccount_to(output.getLong("account_to"));
+		newTransfer.setTransferId(output.getLong("transfer_id"));
+		newTransfer.setTransferTypeId(output.getLong("transfer_type_id"));
+		newTransfer.setTransferStatusId(output.getLong("transfer_statu_id"));
+		newTransfer.setAccountFrom(output.getLong("account_from"));
+		newTransfer.setAccountTo(output.getLong("account_to"));
 		newTransfer.setAmount(output.getBigDecimal("amount"));
 		return newTransfer;
 	}
