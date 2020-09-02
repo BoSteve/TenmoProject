@@ -43,6 +43,20 @@ public class UserSqlDAO implements UserDAO {
     }
 
     @Override
+    public List<User> findAllUsersExceptCurrent(Long userId) {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM users WHERE user_id <> ?";
+
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        while(results.next()) {
+            User user = mapRowToUser(results);
+            users.add(user);
+        }
+
+        return users;
+    }
+    
+    @Override
     public User findByUsername(String username) throws UsernameNotFoundException {
         for (User user : this.findAll()) {
             if( user.getUsername().toLowerCase().equals(username.toLowerCase())) {
