@@ -1,0 +1,57 @@
+package com.techelevator.tenmo.dao;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+
+import com.techelevator.tenmo.model.Accounts;
+
+public class AccountsSqlDAO implements AccountsDAO {
+
+	private JdbcTemplate jdbcTemplate;
+	
+	public AccountsSqlDAO(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+	
+	@Override
+	public List<Accounts> findAll() {
+		List<Accounts> allAccounts = new ArrayList<>();
+		
+		String sql = "SELECT * FROM accounts";
+		
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+		
+		while(results.next()) {
+			Accounts account = mapRowToAccounts(results);
+			allAccounts.add(account);
+		}
+		
+		return allAccounts;
+	}
+
+	@Override
+	public Long findAccountIdByUserId(Long userId) {
+		Long accountId = 0L;
+		try {
+		for (Accounts thisAccount : findAll()) {
+			if (thisAccount.getUserId().equals(userId)) {
+				accountId = thisAccount.getAccountId();
+			}
+		} 
+		} catch (Exception e) {
+			System.out.println("No matching account found.");
+		}
+		return accountId;
+	}
+
+	private Accounts mapRowToAccounts(SqlRowSet rs) {
+		Accounts account = new Accounts();
+		account.setAccountId(rs.getLong("account_id"));
+		account.setUserId(rs.getLong("user_id"));
+		account.setBalance(rs.getBigDecimal("balance"));
+		return account;
+	}
+}
