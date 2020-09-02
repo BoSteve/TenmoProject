@@ -40,10 +40,10 @@ jdbcTemplate.update(addSqlTransfer, transferId, statusId, aFrom, aTo, amount);
 		List<Transfer> transferIdList = new ArrayList<Transfer>();
 		String sql = "SELECT * FROM transfers WHERE transfer_id = ?";
 		
-		SqlRowSet sqlResult = jdbcTemplate.queryForRowSet(sql, transferId);
+		SqlRowSet output = jdbcTemplate.queryForRowSet(sql, transferId);
 		
-		while (sqlResult.next()) {
-			Transfer idTransfer = AddRowToTransfer(sqlResult);
+		while (output.next()) {
+			Transfer idTransfer = AddRowToTransfer(output);
 			transferIdList.add(idTransfer);
 		}
 		// TODO Auto-generated method stub
