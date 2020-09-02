@@ -6,9 +6,11 @@ import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Service;
 
 import com.techelevator.tenmo.model.Accounts;
 
+@Service
 public class AccountsSqlDAO implements AccountsDAO {
 
 	private JdbcTemplate jdbcTemplate;
@@ -50,6 +52,7 @@ public class AccountsSqlDAO implements AccountsDAO {
 		return accountId;
 	}
 
+	//returns account balance by account id
 	@Override
 	public BigDecimal accountBalanceByAccountId(Long accountId) {
 		BigDecimal accountBalance = new BigDecimal(0.00);
