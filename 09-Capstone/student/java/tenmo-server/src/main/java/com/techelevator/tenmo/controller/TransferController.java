@@ -32,28 +32,28 @@ public class TransferController {
 	private UserDAO userDAO;
 	@Autowired
 	private AccountsDAO accountsDAO;
-
+	
 	@RequestMapping(path = "/registeredUsers", method = RequestMethod.GET)
 	public List<User> getListOfRegisteredUsers() {
-		Optional<String> username = SecurityUtils.getCurrentUsername();
-		Long userId = (long) userDAO.findIdByUsername(username.get());
-		List<User> registeredUsersList = userDAO.findAllUsersExceptCurrent(userId);
+		String currentUsername = SecurityUtils.getCurrentUsername().get();
+		Long currentUserId = (long) userDAO.findIdByUsername(currentUsername);
+		List<User> registeredUsersList = userDAO.findAllUsersExceptCurrent(currentUserId);
 		return registeredUsersList;
 	}
 
 	@RequestMapping(path = "", method = RequestMethod.POST)
-	public void transferFunds(@RequestBody Long accountToId, BigDecimal transferAmount) {
-
+	public void transferFunds(@RequestBody int userId, BigDecimal transferAmount) {
+		String currentUsername = SecurityUtils.getCurrentUsername().get();
+		Long currentUserId = (long) userDAO.findIdByUsername(currentUsername);
+		Long currentAccountId = accountsDAO.findAccountIdByUserId(currentUserId);
 		// determining if current user's funds are suffcient for transfer amount
-		Optional<String> username = SecurityUtils.getCurrentUsername();
-		Long userId = (long) userDAO.findIdByUsername(username.get());
-		Long accountFromId = accountsDAO.findAccountIdByUserId(userId);
-		BigDecimal currentBalance = accountsDAO.accountBalanceByAccountId(accountFromId);
+		Long accountToId = accountsDAO.findAccountIdByUserId((long) userId);
+		BigDecimal currentBalance = accountsDAO.accountBalanceByAccountId(currentAccountId);
 
 		if (currentBalance.doubleValue() >= transferAmount.doubleValue()) {
-			transferDAO.addTransfer(accountFromId, accountToId, transferAmount);
+			transferDAO.addTransfer(currentAccountId, accountToId, transferAmount);
 			accountsDAO.transferIn(accountToId, transferAmount);
-			accountsDAO.transferOut(accountFromId, transferAmount);
+			accountsDAO.transferOut(currentAccountId, transferAmount);
 		} else {
 			System.out.println(
 					SecurityUtils.getCurrentUsername().get() + "'s account funds are insufficient for transfer.");
@@ -61,6 +61,15 @@ public class TransferController {
 
 	}
 	
-//	@RequestMapping(path = "", method = RequestMethod.GET)
-//	public <>
+	@RequestMapping(path = "", method = RequestMethod.GET)
+	public List<Transfer> getAllTransfersAccountId() {
+		String currentUsername = SecurityUtils.getCurrentUsername().get();
+		Long currentUserId = (long) userDAO.findIdByUsername(currentUsername);
+		Long currentAccountId = accountsDAO.findAccountIdByUserId(currentUserId);
+		
+		List<Transfer> allTransfers = transferDAO.transfersByAccount(currentAccountId);
+		
+		return allTransfers; 
+	}
+	
 }
