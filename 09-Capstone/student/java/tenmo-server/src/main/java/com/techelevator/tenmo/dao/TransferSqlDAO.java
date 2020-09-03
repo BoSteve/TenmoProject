@@ -20,7 +20,7 @@ public class TransferSqlDAO implements TransferDAO {
 	}
 
 	@Override
-	public void addTransfer(Long transferTypeId, Long statusId, Long aFrom, Long aTo, BigDecimal amount) {
+	public void addTransfer(Long aFrom, Long aTo, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		String addSqlTransfer = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) "
 				+ "VALUES (2, 2, ?, ?, ?)";
@@ -29,17 +29,16 @@ public class TransferSqlDAO implements TransferDAO {
 	}
 
 	@Override
-	public List<Transfer> getTransfersById(Long transferId) {
-		List<Transfer> transferIdList = new ArrayList<Transfer>();
+	public Transfer getTransfersById(Long transferId) {
+		Transfer thisTransfer = new Transfer();
 		String sql = "SELECT * FROM transfers WHERE transfer_id = ?";
 
 		SqlRowSet output = jdbcTemplate.queryForRowSet(sql, transferId);
 
-		while (output.next()) {
-			Transfer idTransfer = AddRowToTransfer(output);
-			transferIdList.add(idTransfer);
+		if (output.next()) {
+			thisTransfer = addRowToTransfer(output);
 		}
-		return transferIdList;
+		return thisTransfer;
 	}
 
 	@Override
@@ -51,14 +50,14 @@ public class TransferSqlDAO implements TransferDAO {
 		SqlRowSet output = jdbcTemplate.queryForRowSet(sqlTransfer, accountId, accountId);
 
 		while (output.next()) {
-			Transfer newTransfer = AddRowToTransfer(output);
+			Transfer newTransfer = addRowToTransfer(output);
 			transferList.add(newTransfer);
 
 		}
 		return transferList;
 	}
 
-	private Transfer AddRowToTransfer(SqlRowSet output) {
+	private Transfer addRowToTransfer(SqlRowSet output) {
 		Transfer newTransfer = new Transfer();
 
 		newTransfer.setTransferId(output.getLong("transfer_id"));

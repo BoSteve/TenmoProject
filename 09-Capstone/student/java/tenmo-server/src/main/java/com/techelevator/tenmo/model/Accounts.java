@@ -13,12 +13,21 @@ public class Accounts {
 	}
 
 	public Accounts(Long accountId, Long userId, BigDecimal balance) {
-		super();
 		this.accountId = accountId;
 		this.userId = userId;
 		this.balance = balance;
 	}
 
+	public void transferIn(Long accountId, BigDecimal amount) {
+		this.accountId = accountId;
+		this.balance = this.balance.add(amount);
+	}
+	
+	public void transferOut(Long accountId, BigDecimal amount) {
+		this.accountId = accountId;
+		this.balance = this.balance.subtract(amount);
+	}
+	
 	public Long getAccountId() {
 		return accountId;
 	}

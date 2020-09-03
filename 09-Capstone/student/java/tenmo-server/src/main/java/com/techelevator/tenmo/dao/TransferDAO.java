@@ -7,11 +7,11 @@ import com.techelevator.tenmo.model.Transfer;
 
 public interface TransferDAO {
 	
-	void addTransfer(Long transferTypeId, Long statusId, Long aFrom, Long aTo, BigDecimal amount);
+	void addTransfer(Long aFrom, Long aTo, BigDecimal amount);
 	
 	List<Transfer> transfersByAccount(Long accountId);
 	
-	List<Transfer> getTransfersById(Long transferId);
+	Transfer getTransfersById(Long transferId);
 	
 	
 }

@@ -45,14 +45,16 @@ public class UserSqlDAO implements UserDAO {
     @Override
     public List<User> findAllUsersExceptCurrent(Long userId) {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM users WHERE user_id <> ?";
-
+        String sql = "SELECT user_id, username FROM users WHERE user_id <> ?";
+        
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        
         while(results.next()) {
-            User user = mapRowToUser(results);
-            users.add(user);
+        	User thisUser = new User();
+        	thisUser.setId(results.getLong("user_id"));
+        	thisUser.setUsername(results.getString("username"));
+            users.add(thisUser);
         }
-
         return users;
     }
     

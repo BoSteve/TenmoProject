@@ -14,6 +14,7 @@ import com.techelevator.tenmo.model.Accounts;
 public class AccountsSqlDAO implements AccountsDAO {
 
 	private JdbcTemplate jdbcTemplate;
+	private Accounts accounts;
 
 	public AccountsSqlDAO(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
@@ -66,6 +67,14 @@ public class AccountsSqlDAO implements AccountsDAO {
 		return accountBalance;
 	}
 
+	public void transferIn(Long accountId, BigDecimal amount) {
+		accounts.transferIn(accountId, amount);
+	}
+
+	public void transferOut(Long accountId, BigDecimal amount) {
+		accounts.transferOut(accountId, amount);
+	}
+	
 	private Accounts mapRowToAccounts(SqlRowSet rs) {
 		Accounts account = new Accounts();
 		account.setAccountId(rs.getLong("account_id"));
@@ -73,5 +82,6 @@ public class AccountsSqlDAO implements AccountsDAO {
 		account.setBalance(rs.getBigDecimal("balance"));
 		return account;
 	}
+
 
 }
