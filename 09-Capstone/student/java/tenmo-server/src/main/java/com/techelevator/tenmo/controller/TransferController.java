@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -50,12 +51,12 @@ public class TransferController {
 		Long accountToId = accountsDAO.findAccountIdByUserId(userId);
 		BigDecimal currentBalance = accountsDAO.accountBalanceByAccountId(currentAccountId);
 
-		if (currentBalance.doubleValue() >= transferAmount.doubleValue()) {
+		if (currentBalance.doubleValue() >= transferAmount.doubleValue() && currentAccountId != accountToId) {
 			transferDAO.addTransfer(currentAccountId, accountToId, transferAmount.setScale(2, RoundingMode.HALF_UP));
 
 		} else {
 			System.out.println(
-					SecurityUtils.getCurrentUsername().get() + "'s account funds are insufficient for transfer.");
+					SecurityUtils.getCurrentUsername().get() + "'s account funds are insufficient for transfer or trying to transfer to own account.");
 		}
 
 	}
@@ -69,6 +70,11 @@ public class TransferController {
 		List<Transfer> allTransfers = transferDAO.transfersByAccount(currentAccountId);
 
 		return allTransfers;
+	}
+	
+	@RequestMapping(path = "/{id}", method = RequestMethod.GET)
+	public Transfer getTransferbyId(@PathVariable int id) {
+		return transferDAO.getTransfersById((long)id);
 	}
 
 }

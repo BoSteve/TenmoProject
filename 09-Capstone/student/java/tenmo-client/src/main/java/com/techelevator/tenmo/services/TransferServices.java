@@ -34,17 +34,20 @@ public class TransferServices {
 //
 //	}
 
-	public Transfer getTransferById(Long accountId, Long transferId) {
-		Transfer transfer = restTemplate.exchange(BASE_URL + "accounts/" + accountId + "/transfer/" + transferId,
-				HttpMethod.GET, makeAuthEntity(), Transfer.class).getBody();
+	public Transfer getTransferById(Long transferId) {
+		Transfer transfer = restTemplate
+				.exchange(BASE_URL + "transfer/" + transferId, HttpMethod.GET, makeAuthEntity(), Transfer.class)
+				.getBody();
 		return transfer;
 
 	}
 
 	public List<Transfer> historyOfTransfers() {
-		ResponseEntity<List<Transfer>> responseEntity = restTemplate.exchange(BASE_URL + "transfer", HttpMethod.GET, makeAuthEntity(), new ParameterizedTypeReference<List<Transfer>>() {});
+		ResponseEntity<List<Transfer>> responseEntity = restTemplate.exchange(BASE_URL + "transfer", HttpMethod.GET,
+				makeAuthEntity(), new ParameterizedTypeReference<List<Transfer>>() {
+				});
 		List<Transfer> transferHist = responseEntity.getBody();
-	return transferHist;
+		return transferHist;
 	}
 
 	public Transfer sendTransfer(Transfer transfer) {

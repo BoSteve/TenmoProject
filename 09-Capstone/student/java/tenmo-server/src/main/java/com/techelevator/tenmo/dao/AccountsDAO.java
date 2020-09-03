@@ -13,7 +13,4 @@ public interface AccountsDAO {
 	
 	BigDecimal accountBalanceByAccountId(Long accountId);
 	
-//	void transferIn(Long accountId, BigDecimal amount);
-//	
-//	void transferOut(Long accountId, BigDecimal amount);
 }

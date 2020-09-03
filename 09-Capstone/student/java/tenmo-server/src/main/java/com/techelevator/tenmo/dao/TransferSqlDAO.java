@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.techelevator.tenmo.model.Transfer;
 
+
 @Service
 public class TransferSqlDAO implements TransferDAO {
 
@@ -18,10 +19,10 @@ public class TransferSqlDAO implements TransferDAO {
 	public TransferSqlDAO(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
-
+	
 	@Override
 	public void addTransfer(Long aFrom, Long aTo, BigDecimal amount) {
-		// TODO Auto-generated method stub
+		
 		String insertSqlTransfer = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) "
 				+ "VALUES (2, 2, ?, ?, ?)";
 		
@@ -29,15 +30,17 @@ public class TransferSqlDAO implements TransferDAO {
 		String subSqlTransfer = "UPDATE accounts SET balance = balance - ? WHERE account_id = ?";
 
 		jdbcTemplate.update(insertSqlTransfer, aFrom, aTo, amount);
-		jdbcTemplate.update(addSqlTransfer, aTo, amount);
-		jdbcTemplate.update(subSqlTransfer, aFrom, amount);
-		
+		jdbcTemplate.update(addSqlTransfer, amount, aTo);
+		jdbcTemplate.update(subSqlTransfer, amount, aFrom);
 	}
 
 	@Override
 	public Transfer getTransfersById(Long transferId) {
 		Transfer thisTransfer = new Transfer();
-		String sql = "SELECT * FROM transfers WHERE transfer_id = ?";
+		String sql = "SELECT * FROM transfers " 
+				+ "JOIN transfer_types ON transfer_types.transfer_type_id = transfers.transfer_type_id " 
+				+ "JOIN transfer_statuses ON transfer_statuses.transfer_status_id = transfers.transfer_status_id " 
+				+ "WHERE transfer_id = ?";
 
 		SqlRowSet output = jdbcTemplate.queryForRowSet(sql, transferId);
 
@@ -49,9 +52,11 @@ public class TransferSqlDAO implements TransferDAO {
 
 	@Override
 	public List<Transfer> transfersByAccount(Long accountId) {
-
 		List<Transfer> transferList = new ArrayList<Transfer>();
-		String sqlTransfer = "SELECT * FROM transfers WHERE account_from = ? OR account_to = ?";
+		String sqlTransfer = "SELECT * FROM transfers "
+				+ "JOIN transfer_types ON transfer_types.transfer_type_id = transfers.transfer_type_id "
+				+ "JOIN transfer_statuses ON transfer_statuses.transfer_status_id = transfers.transfer_status_id "
+				+ "WHERE account_from = ? OR account_to = ?";
 
 		SqlRowSet output = jdbcTemplate.queryForRowSet(sqlTransfer, accountId, accountId);
 
@@ -67,10 +72,10 @@ public class TransferSqlDAO implements TransferDAO {
 		Transfer newTransfer = new Transfer();
 
 		newTransfer.setTransferId(output.getLong("transfer_id"));
-		newTransfer.setTransferTypeId(output.getLong("transfer_type_id"));
-		newTransfer.setTransferStatusId(output.getLong("transfer_status_id"));
-		newTransfer.setAccountFrom(output.getLong("account_from"));
-		newTransfer.setAccountTo(output.getLong("account_to"));
+		newTransfer.setTransferTypeDesc(output.getString("transfer_type_desc"));
+		newTransfer.setTransferStatusDesc(output.getString("transfer_status_desc"));
+		newTransfer.setUserFrom(output.getLong("account_from"));
+		newTransfer.setUserTo(output.getLong("account_to"));
 		newTransfer.setAmount(output.getBigDecimal("amount"));
 		return newTransfer;
 	}

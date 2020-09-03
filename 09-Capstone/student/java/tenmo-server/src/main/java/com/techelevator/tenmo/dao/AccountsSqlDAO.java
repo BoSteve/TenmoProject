@@ -65,14 +65,6 @@ public class AccountsSqlDAO implements AccountsDAO {
 
 		return accountBalance;
 	}
-
-//	public void transferIn(Long accountId, BigDecimal amount) {
-//		accounts.transferIn(accountId, amount.setScale(2, RoundingMode.HALF_UP));
-//	}
-//
-//	public void transferOut(Long accountId, BigDecimal amount) {
-//		accounts.transferOut(accountId, amount.setScale(2, RoundingMode.HALF_UP));
-//	}
 	
 	private Accounts mapRowToAccounts(SqlRowSet rs) {
 		Accounts account = new Accounts();

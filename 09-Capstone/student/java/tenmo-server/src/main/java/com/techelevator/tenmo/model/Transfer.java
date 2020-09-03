@@ -5,10 +5,10 @@ import java.math.BigDecimal;
 public class Transfer {
 
 	private Long transferId;
-	private Long transferTypeId;
-	private Long transferStatusId;
-	private Long accountFrom;
-	private Long accountTo;
+	private String transferTypeDesc;
+	private String transferStatusDesc;
+	private Long userFrom;
+	private Long userTo;
 	private BigDecimal amount;
 
 	public Long getTransferId() {
@@ -19,36 +19,36 @@ public class Transfer {
 		this.transferId = transferId;
 	}
 
-	public Long getTransferTypeId() {
-		return transferTypeId;
+	public String getTransferTypeDesc() {
+		return transferTypeDesc;
 	}
 
-	public void setTransferTypeId(Long transferTypeId) {
-		this.transferTypeId = transferTypeId;
+	public void setTransferTypeDesc(String transferTypeDesc) {
+		this.transferTypeDesc = transferTypeDesc;
 	}
 
-	public Long getTransferStatusId() {
-		return transferStatusId;
+	public String getTransferStatusDesc() {
+		return transferStatusDesc;
 	}
 
-	public void setTransferStatusId(Long transferStatusId) {
-		this.transferStatusId = transferStatusId;
+	public void setTransferStatusDesc(String transferStatusDesc) {
+		this.transferStatusDesc = transferStatusDesc;
 	}
 
-	public Long getAccountFrom() {
-		return accountFrom;
+	public Long getUserFrom() {
+		return userFrom;
 	}
 
-	public void setAccountFrom(Long accountFrom) {
-		this.accountFrom = accountFrom;
+	public void setUserFrom(Long accountFrom) {
+		this.userFrom = accountFrom;
 	}
 
-	public Long getAccountTo() {
-		return accountTo;
+	public Long getUserTo() {
+		return userTo;
 	}
 
-	public void setAccountTo(Long accountTo) {
-		this.accountTo = accountTo;
+	public void setUserTo(Long accountTo) {
+		this.userTo = accountTo;
 	}
 
 	public BigDecimal getAmount() {
@@ -61,9 +61,11 @@ public class Transfer {
 
 	@Override
 	public String toString() {
-		return "Transfer [transfer_id=" + transferId + ", transfer_type_id=" + transferTypeId + ", transfer_status_id="
-				+ transferStatusId + ", account_from=" + accountFrom + ", account_to=" + accountTo + ", amount="
-				+ amount + "]";
+		return "\nTransfer Id = " + transferId 
+				+ "\nTransfer Type = " + transferTypeDesc 
+				+ "\nTransfer Status = " + transferStatusDesc 
+				+ "\nSender's Account = " + userFrom 
+				+ "\nReceiver's Account = " + userTo 
+				+ "\nTransfer Amount = " + amount;
 	}
-
 }
