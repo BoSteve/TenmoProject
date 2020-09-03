@@ -1,7 +1,6 @@
 package com.techelevator.tenmo.dao;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,6 @@ import com.techelevator.tenmo.model.Accounts;
 public class AccountsSqlDAO implements AccountsDAO {
 
 	private JdbcTemplate jdbcTemplate;
-	private Accounts accounts;
 
 	public AccountsSqlDAO(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;

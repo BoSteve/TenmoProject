@@ -3,21 +3,17 @@ package com.techelevator.tenmo.controller;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.techelevator.tenmo.dao.AccountsDAO;
 import com.techelevator.tenmo.dao.TransferDAO;
 import com.techelevator.tenmo.dao.UserDAO;
-import com.techelevator.tenmo.model.Accounts;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.TransferFundsWeb;
 import com.techelevator.tenmo.model.User;
@@ -56,8 +52,7 @@ public class TransferController {
 
 		if (currentBalance.doubleValue() >= transferAmount.doubleValue()) {
 			transferDAO.addTransfer(currentAccountId, accountToId, transferAmount.setScale(2, RoundingMode.HALF_UP));
-//			accountsDAO.transferIn(accountToId, transferAmount.setScale(2, RoundingMode.HALF_UP));
-//			accountsDAO.transferOut(currentAccountId, transferAmount.setScale(2, RoundingMode.HALF_UP));
+
 		} else {
 			System.out.println(
 					SecurityUtils.getCurrentUsername().get() + "'s account funds are insufficient for transfer.");
