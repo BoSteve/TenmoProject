@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.controller;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ import com.techelevator.tenmo.dao.TransferDAO;
 import com.techelevator.tenmo.dao.UserDAO;
 import com.techelevator.tenmo.model.Accounts;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.TransferFundsWeb;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.security.SecurityUtils;
 
@@ -32,7 +34,7 @@ public class TransferController {
 	private UserDAO userDAO;
 	@Autowired
 	private AccountsDAO accountsDAO;
-	
+
 	@RequestMapping(path = "/registeredUsers", method = RequestMethod.GET)
 	public List<User> getListOfRegisteredUsers() {
 		String currentUsername = SecurityUtils.getCurrentUsername().get();
@@ -42,34 +44,36 @@ public class TransferController {
 	}
 
 	@RequestMapping(path = "", method = RequestMethod.POST)
-	public void transferFunds(@RequestBody int userId, BigDecimal transferAmount) {
+	public void transferFunds(@RequestBody TransferFundsWeb transferFundsWeb) {
+		Long userId = transferFundsWeb.getUserId();
+		BigDecimal transferAmount = new BigDecimal(transferFundsWeb.getTransferAmount());
 		String currentUsername = SecurityUtils.getCurrentUsername().get();
 		Long currentUserId = (long) userDAO.findIdByUsername(currentUsername);
 		Long currentAccountId = accountsDAO.findAccountIdByUserId(currentUserId);
-		// determining if current user's funds are suffcient for transfer amount
-		Long accountToId = accountsDAO.findAccountIdByUserId((long) userId);
+		// determining if current user's funds are sufficient for transfer amount
+		Long accountToId = accountsDAO.findAccountIdByUserId(userId);
 		BigDecimal currentBalance = accountsDAO.accountBalanceByAccountId(currentAccountId);
 
 		if (currentBalance.doubleValue() >= transferAmount.doubleValue()) {
-			transferDAO.addTransfer(currentAccountId, accountToId, transferAmount);
-			accountsDAO.transferIn(accountToId, transferAmount);
-			accountsDAO.transferOut(currentAccountId, transferAmount);
+			transferDAO.addTransfer(currentAccountId, accountToId, transferAmount.setScale(2, RoundingMode.HALF_UP));
+//			accountsDAO.transferIn(accountToId, transferAmount.setScale(2, RoundingMode.HALF_UP));
+//			accountsDAO.transferOut(currentAccountId, transferAmount.setScale(2, RoundingMode.HALF_UP));
 		} else {
 			System.out.println(
 					SecurityUtils.getCurrentUsername().get() + "'s account funds are insufficient for transfer.");
 		}
 
 	}
-	
+
 	@RequestMapping(path = "", method = RequestMethod.GET)
 	public List<Transfer> getAllTransfersAccountId() {
 		String currentUsername = SecurityUtils.getCurrentUsername().get();
 		Long currentUserId = (long) userDAO.findIdByUsername(currentUsername);
 		Long currentAccountId = accountsDAO.findAccountIdByUserId(currentUserId);
-		
+
 		List<Transfer> allTransfers = transferDAO.transfersByAccount(currentAccountId);
-		
-		return allTransfers; 
+
+		return allTransfers;
 	}
-	
+
 }

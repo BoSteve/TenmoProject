@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import com.techelevator.tenmo.controller.TransferController;
-
 public class User {
 
    private Long id;

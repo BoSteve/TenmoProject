@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.dao;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,13 +68,13 @@ public class AccountsSqlDAO implements AccountsDAO {
 		return accountBalance;
 	}
 
-	public void transferIn(Long accountId, BigDecimal amount) {
-		accounts.transferIn(accountId, amount);
-	}
-
-	public void transferOut(Long accountId, BigDecimal amount) {
-		accounts.transferOut(accountId, amount);
-	}
+//	public void transferIn(Long accountId, BigDecimal amount) {
+//		accounts.transferIn(accountId, amount.setScale(2, RoundingMode.HALF_UP));
+//	}
+//
+//	public void transferOut(Long accountId, BigDecimal amount) {
+//		accounts.transferOut(accountId, amount.setScale(2, RoundingMode.HALF_UP));
+//	}
 	
 	private Accounts mapRowToAccounts(SqlRowSet rs) {
 		Accounts account = new Accounts();

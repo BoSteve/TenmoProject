@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class Accounts {
 
@@ -20,12 +21,12 @@ public class Accounts {
 
 	public void transferIn(Long accountId, BigDecimal amount) {
 		this.accountId = accountId;
-		this.balance = this.balance.add(amount);
+		this.balance = this.balance.add(amount.setScale(2, RoundingMode.HALF_UP));
 	}
 	
 	public void transferOut(Long accountId, BigDecimal amount) {
 		this.accountId = accountId;
-		this.balance = this.balance.subtract(amount);
+		this.balance = this.balance.subtract(amount.setScale(2, RoundingMode.HALF_UP));
 	}
 	
 	public Long getAccountId() {
@@ -49,7 +50,7 @@ public class Accounts {
 	}
 
 	public void setBalance(BigDecimal balance) {
-		this.balance = balance;
+		this.balance = balance.setScale(2, RoundingMode.HALF_UP);
 	}
 	
 	@Override
