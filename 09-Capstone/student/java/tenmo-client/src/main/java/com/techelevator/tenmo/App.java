@@ -152,6 +152,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		    try {
 				currentUser = authenticationService.login(credentials);
 				this.accountService.setToken(currentUser.getToken());
+				this.transferService.setToken(currentUser.getToken());
 			} catch (AuthenticationServiceException e) {
 				System.out.println("LOGIN ERROR: "+e.getMessage());
 				System.out.println("Please attempt to login again.");
