@@ -22,10 +22,16 @@ public class TransferSqlDAO implements TransferDAO {
 	@Override
 	public void addTransfer(Long aFrom, Long aTo, BigDecimal amount) {
 		// TODO Auto-generated method stub
-		String addSqlTransfer = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) "
+		String insertSqlTransfer = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) "
 				+ "VALUES (2, 2, ?, ?, ?)";
+		
+		String addSqlTransfer = "UPDATE accounts SET balance = balance + ? WHERE account_id = ?";
+		String subSqlTransfer = "UPDATE accounts SET balance = balance - ? WHERE account_id = ?";
 
-		jdbcTemplate.update(addSqlTransfer, aFrom, aTo, amount);
+		jdbcTemplate.update(insertSqlTransfer, aFrom, aTo, amount);
+		jdbcTemplate.update(addSqlTransfer, aTo, amount);
+		jdbcTemplate.update(subSqlTransfer, aFrom, amount);
+		
 	}
 
 	@Override
