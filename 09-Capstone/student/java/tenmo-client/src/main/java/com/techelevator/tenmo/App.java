@@ -6,6 +6,7 @@ import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
+import java.util.List;
 import com.techelevator.tenmo.services.TransferServices;
 import com.techelevator.view.ConsoleService;
 
@@ -79,8 +80,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-		Transfer[] transferHistory = transferService.historyOfTransfers(currentUser.getToken(), currentUser.getUser().getId());
-		if (transferHistory.length == 0) {
+		List<Transfer> transferHistory = transferService.historyOfTransfers();
+		if (transferHistory.isEmpty()) {
 			System.out.println("You have no previous transfers in this account");
 		}
 		

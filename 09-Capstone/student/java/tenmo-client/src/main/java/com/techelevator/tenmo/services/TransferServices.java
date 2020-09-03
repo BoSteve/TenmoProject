@@ -1,5 +1,8 @@
 package com.techelevator.tenmo.services;
 
+import java.util.List;
+
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -38,11 +41,9 @@ public class TransferServices {
 
 	}
 
-// ================COME BACK TO THIS==================================
-
-	public Transfer[] historyOfTransfers(String token, Integer integer) {
-		Transfer[] transferHist = null;
-		transferHist = restTemplate.exchange(BASE_URL + "transfer/history", HttpMethod.GET, makeAuthEntity(), Transfer[].class).getBody();
+	public List<Transfer> historyOfTransfers() {
+		ResponseEntity<List<Transfer>> responseEntity = restTemplate.exchange(BASE_URL + "transfer", HttpMethod.GET, makeAuthEntity(), new ParameterizedTypeReference<List<Transfer>>() {});
+		List<Transfer> transferHist = responseEntity.getBody();
 	return transferHist;
 	}
 
