@@ -11,6 +11,16 @@ public class Transfer {
 	private Long userTo;
 	private BigDecimal amount;
 
+	public Transfer() {
+		
+	}
+	
+	public Transfer(Long userFrom, Long userTo, BigDecimal amount) {
+		this.userFrom = userFrom;
+		this.userTo = userTo;
+		this.amount = amount;
+	}
+
 	public Long getTransferId() {
 		return transferId;
 	}

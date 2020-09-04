@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.services;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.core.ParameterizedTypeReference;
@@ -12,6 +13,8 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import com.techelevator.tenmo.models.Transfer;
+import com.techelevator.tenmo.models.TransferFundsWeb;
+import com.techelevator.tenmo.models.User;
 
 public class TransferServices {
 
@@ -23,17 +26,9 @@ public class TransferServices {
 		this.BASE_URL = url;
 	}
 
-//	====NOT NEEDED RIGHT NOW===========
-
-//	public Transfer createTransfer(String token, Transfer transfer) {
-////    	HttpHeaders headers = new HttpHeaders();
-//
-////		HttpEntity<Transfer> entity = new HttpEntity<>(transfer);
-//		ResponseEntity<Transfer> responseEntity = restTemplate.exchange(BASE_URL + "transfer",  HttpMethod.POST, makeAuthEntity(), Transfer.class);
-//		return responseEntity.getBody();
-//		
-//
-//	}
+	public List<User> getRegisteredUsers() {
+		return restTemplate.exchange(BASE_URL + "transfer/registeredUsers", HttpMethod.GET, makeAuthEntity(), new ParameterizedTypeReference<List<User>>() {}).getBody();
+	}
 
 	public Transfer getTransferById(Long transferId) {
 		Transfer transfer = restTemplate
@@ -63,12 +58,11 @@ public class TransferServices {
 		return transferHist;
 	}
 
-	public Transfer sendTransfer(Transfer transfer) {
-//		Transfer transfer = new Transfer();
-		transfer = restTemplate
-				.exchange(BASE_URL + "transfer", HttpMethod.POST, makeTransferEntity(transfer), Transfer.class)
-				.getBody();
-		return transfer;
+	public void sendTransfer(Long userToId, BigDecimal transferAmount) {
+		TransferFundsWeb transfer = new TransferFundsWeb();
+		transfer.setUserToId(userToId);
+		transfer.setTransferAmount(transferAmount.doubleValue());
+		restTemplate.exchange(BASE_URL + "transfer", HttpMethod.POST, makeTransferEntity(transfer), TransferFundsWeb.class);
 	}
 
 	/**
@@ -77,11 +71,11 @@ public class TransferServices {
 	 * @return {HttpEntity}
 	 */
 
-	private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
+	private HttpEntity<TransferFundsWeb> makeTransferEntity(TransferFundsWeb transfer) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setBearerAuth(this.token);
-		HttpEntity<Transfer> entity = new HttpEntity<>(transfer, headers);
+		HttpEntity<TransferFundsWeb> entity = new HttpEntity<>(transfer, headers);
 		return entity;
 	}
 

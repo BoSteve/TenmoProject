@@ -13,16 +13,26 @@ public class UserService {
 	private String BASE_URL;
 	private RestTemplate restTemplate = new RestTemplate();
 	private String token;
-
+	
 	public UserService(String url) {
 		this.BASE_URL = url;
 
 	}
 
+	public User getCurrentUser() {
+		User thisUser = new User();
+		try {
+			thisUser = restTemplate.exchange(BASE_URL + "users/me", HttpMethod.GET, makeAuthEntity(), User.class).getBody();
+		} catch (RestClientResponseException ex) {
+			System.out.println(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
+		}
+		return thisUser;
+	}
+	
 	public User getUserById(long id) {
 		User user = new User();
 		try {
-			user = restTemplate.exchange(BASE_URL + "users" + id, HttpMethod.GET, makeAuthEntity(), User.class).getBody();
+			user = restTemplate.exchange(BASE_URL + "users/" + id, HttpMethod.GET, makeAuthEntity(), User.class).getBody();
 		} catch (RestClientResponseException ex) {
 			System.out.println(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
 		}

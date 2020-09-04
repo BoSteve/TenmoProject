@@ -1,10 +1,10 @@
-package com.techelevator.tenmo.model;
+package com.techelevator.tenmo.models;
 
 public class TransferFundsWeb {
 	
 	private long userToId;
 	private double transferAmount;
-		
+	
 	public long getUserToId() {
 		return userToId;
 	}

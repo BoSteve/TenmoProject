@@ -10,7 +10,17 @@ public class Transfer {
 	private Long userFrom;
 	private Long userTo;
 	private BigDecimal amount;
-	
+
+	public Transfer() {
+
+	}
+
+	public Transfer(Long userFrom, Long userTo, BigDecimal amount) {
+		this.userFrom = userFrom;
+		this.userTo = userTo;
+		this.amount = amount;
+	}
+
 	public Long getTransferId() {
 		return transferId;
 	}
@@ -61,12 +71,9 @@ public class Transfer {
 
 	@Override
 	public String toString() {
-		return "\nTransfer Id = " + transferId 
-				+ "\nTransfer Type = " + transferTypeDesc 
-				+ "\nTransfer Status = " + transferStatusDesc 
-				+ "\nSender's Account = " + userFrom 
-				+ "\nReceiver's Account = " + userTo 
+		return "\nTransfer Id = " + transferId + "\nTransfer Type = " + transferTypeDesc + "\nTransfer Status = "
+				+ transferStatusDesc + "\nSender's Account = " + userFrom + "\nReceiver's Account = " + userTo
 				+ "\nTransfer Amount = " + amount;
 	}
-	
+
 }

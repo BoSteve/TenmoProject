@@ -7,6 +7,9 @@ import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import com.techelevator.tenmo.services.TransferServices;
 import com.techelevator.tenmo.services.UserService;
@@ -30,14 +33,13 @@ public class App {
 	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_VIEW_BALANCE, MAIN_MENU_OPTION_SEND_BUCKS,
 			MAIN_MENU_OPTION_VIEW_PAST_TRANSFERS, MAIN_MENU_OPTION_REQUEST_BUCKS,
 			MAIN_MENU_OPTION_VIEW_PENDING_REQUESTS, MAIN_MENU_OPTION_LOGIN, MENU_OPTION_EXIT };
-	private static final String [] TRANSFER_MENU_OPTIONS = {"Please enter transfer ID to view details (0 to cancel): "};
 	private AuthenticatedUser currentUser;
 	private ConsoleService console;
 	private AuthenticationService authenticationService;
 	private AccountService accountService = new AccountService(API_BASE_URL);
 	private TransferServices transferServices = new TransferServices(API_BASE_URL);
 	private UserService userService = new UserService(API_BASE_URL);
-	
+
 	public static void main(String[] args) {
 		App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL));
 		app.run();
@@ -86,42 +88,71 @@ public class App {
 
 	private void viewTransferHistory() {
 		displayTransferSummaryBanner();
-		
+		displayTransferSummary();
+		String choice = (String) console.getUserInput("\nPlease enter transfer ID to view details (0 to cancel)" );
+		while (!choice.equals("0")) {
+			displayTransferDetails(transferServices.getTransferById(Long.parseLong(choice)));
+			choice = (String) console.getUserInput("\nPlease enter another transfer ID to view details (0 to cancel)" );
+		}
 	}
 
 	private void displayTransferSummaryBanner() {
-		Transfer[] transferDisplay = transferServices.allTransfers(currentUser.getToken(), currentUser.getUser().getId());
-		System.out.println("--------------------------------------");
+		System.out.println("----------------------------------------------------");
 		System.out.println("Transfers");
-		System.out.printf("%-8s %-20s %-20s %-1s", "ID", "From", "To", "Amount");
-		System.out.println("--------------------------------------");
-		for (Transfer thisTransfer : transferDisplay) {
-//			System.out.printf("%-8s %-20s %-20s %-1s", transferServices.historyOfTransfers(), transferServices.
+		System.out.printf("%-8s %-15s %-15s %-1s", "ID", "From", "To", "Amount\n");
+		System.out.println("----------------------------------------------------");
+	}
+
+	private void displayTransferSummary() {
+		for (Transfer thisTransfer : transferServices.historyOfTransfers()) {
+			System.out.printf("%-8s %-15s %-15s %-1s", thisTransfer.getTransferId(),
+					userService.getUserById((thisTransfer.getUserFrom())).getUsername(),
+					userService.getUserById(thisTransfer.getUserTo()).getUsername(), 
+					thisTransfer.getAmount() +"\n");
 		}
 
-		
-		
 	}
-	
-	private void displayTransferSummary() {
-//		Transfer[] transferDisplay = transferServices.allTransfers(currentUser.getToken(), currentUser.getUser().getId());
-//		for (Transfer thisTransfer : transferServices.historyOfTransfers()) {
-//			System.out.printf("%-8s %-20s %-20s %-1s", 
-//					thisTransfer.getTransferId(),
-//					thisTransfer.getUserFrom(),
-//		}
-		
+
+	private void displayTransferDetails(Transfer transfer) {
+		System.out.println(
+				"\nTransfer Id = " + transfer.getTransferId() 
+				+ "\nFrom Account = " + userService.getUserById((transfer.getUserFrom())).getUsername()
+				+ "\nTo Account = " + userService.getUserById(transfer.getUserTo()).getUsername() 
+				+ "\nTransfer Type = " + transfer.getTransferTypeDesc() 
+				+ "\nTransfer Status = " + transfer.getTransferStatusDesc()
+				+ "\nTransfer Amount = " + transfer.getAmount());
 	}
-	
+
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub
 
 	}
 
 	private void sendBucks() {
-		// TODO Auto-generated method stub
+		Long userToId = null;
+		BigDecimal transferAmount = null;
+		displayRegisteredUsers();
+		String choice = (String) console.getUserInput("\nEnter ID of user you are sending to (0 to cancel)" );
+		while (!choice.equals("0")) {
+		userToId = (Long.parseLong(choice));
+		choice = (String) console.getUserInput("\nEnter amount");
+		transferAmount = (new BigDecimal(choice).setScale(2, RoundingMode.HALF_UP));
+		transferServices.sendTransfer(userToId, transferAmount);
+		choice = (String) console.getUserInput("\nEnter another ID of user if you would like to send more TE Bucks (0 to cancel)" );
+		}
 	}
 
+	private void displayRegisteredUsers() {
+		List<User> userList = transferServices.getRegisteredUsers();
+		System.out.println("---------------");
+		System.out.printf("%-5s %-1s", "Id", "User\n");
+		System.out.println("---------------");
+		for (User thisUser : userList) {
+			System.out.printf("%-5s %-1s",
+					thisUser.getId(), thisUser.getUsername() + "\n");
+		}
+	}
+	
 	private void requestBucks() {
 		// TODO Auto-generated method stub
 

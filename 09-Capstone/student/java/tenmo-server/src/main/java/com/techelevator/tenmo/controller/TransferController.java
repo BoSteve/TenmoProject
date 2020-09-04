@@ -42,7 +42,7 @@ public class TransferController {
 
 	@RequestMapping(path = "", method = RequestMethod.POST)
 	public void transferFunds(@RequestBody TransferFundsWeb transferFundsWeb) {
-		Long userId = transferFundsWeb.getUserId();
+		Long userId = transferFundsWeb.getUserToId();
 		BigDecimal transferAmount = new BigDecimal(transferFundsWeb.getTransferAmount());
 		String currentUsername = SecurityUtils.getCurrentUsername().get();
 		Long currentUserId = (long) userDAO.findIdByUsername(currentUsername);
