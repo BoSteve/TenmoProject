@@ -5,16 +5,21 @@ import java.math.RoundingMode;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.techelevator.tenmo.dao.AccountsDAO;
 import com.techelevator.tenmo.dao.TransferDAO;
 import com.techelevator.tenmo.dao.UserDAO;
+import com.techelevator.tenmo.model.InsufficientFundsException;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.TransferFundsWeb;
 import com.techelevator.tenmo.model.User;
@@ -40,8 +45,9 @@ public class TransferController {
 		return registeredUsersList;
 	}
 
+//	@ResponseStatus(code = HttpStatus.ACCEPTED, reason = "Transfer has been successfully completed")
 	@RequestMapping(path = "", method = RequestMethod.POST)
-	public void transferFunds(@RequestBody TransferFundsWeb transferFundsWeb) {
+	public String transferFunds(@RequestBody TransferFundsWeb transferFundsWeb) {
 		Long userId = transferFundsWeb.getUserToId();
 		BigDecimal transferAmount = new BigDecimal(transferFundsWeb.getTransferAmount());
 		String currentUsername = SecurityUtils.getCurrentUsername().get();
@@ -51,12 +57,18 @@ public class TransferController {
 		Long accountToId = accountsDAO.findAccountIdByUserId(userId);
 		BigDecimal currentBalance = accountsDAO.accountBalanceByAccountId(currentAccountId);
 
-		if (currentBalance.doubleValue() >= transferAmount.doubleValue() && currentAccountId != accountToId) {
+		try {
+			if (currentBalance.doubleValue() <= transferAmount.doubleValue() || currentAccountId == accountToId
+					|| transferAmount.doubleValue() <= 0) {
+				throw new InsufficientFundsException();
+			} else {
+				throw new TransferAcceptedException();
+			}
+		} catch (TransferAcceptedException e) {
 			transferDAO.addTransfer(currentAccountId, accountToId, transferAmount.setScale(2, RoundingMode.HALF_UP));
-
-		} else {
-			System.out.println(
-					SecurityUtils.getCurrentUsername().get() + "'s account funds are insufficient for transfer or trying to transfer to own account.");
+			return e.toString();
+		} catch (InsufficientFundsException e) {
+			return e.toString();
 		}
 
 	}
@@ -71,10 +83,10 @@ public class TransferController {
 
 		return allTransfers;
 	}
-	
+
 	@RequestMapping(path = "/{id}", method = RequestMethod.GET)
 	public Transfer getTransferbyId(@PathVariable int id) {
-		return transferDAO.getTransfersById((long)id);
+		return transferDAO.getTransfersById((long) id);
 	}
 
 }

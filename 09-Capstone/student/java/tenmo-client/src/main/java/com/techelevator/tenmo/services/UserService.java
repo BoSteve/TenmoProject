@@ -19,16 +19,6 @@ public class UserService {
 
 	}
 
-	public User getCurrentUser() {
-		User thisUser = new User();
-		try {
-			thisUser = restTemplate.exchange(BASE_URL + "users/me", HttpMethod.GET, makeAuthEntity(), User.class).getBody();
-		} catch (RestClientResponseException ex) {
-			System.out.println(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
-		}
-		return thisUser;
-	}
-	
 	public User getUserById(long id) {
 		User user = new User();
 		try {

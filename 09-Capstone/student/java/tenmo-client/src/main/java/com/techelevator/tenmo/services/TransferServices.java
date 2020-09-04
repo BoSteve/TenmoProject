@@ -58,11 +58,12 @@ public class TransferServices {
 		return transferHist;
 	}
 
-	public void sendTransfer(Long userToId, BigDecimal transferAmount) {
+	public String sendTransfer(Long userToId, BigDecimal transferAmount) {
 		TransferFundsWeb transfer = new TransferFundsWeb();
 		transfer.setUserToId(userToId);
 		transfer.setTransferAmount(transferAmount.doubleValue());
-		restTemplate.exchange(BASE_URL + "transfer", HttpMethod.POST, makeTransferEntity(transfer), TransferFundsWeb.class);
+		String transferStatus = restTemplate.exchange(BASE_URL + "transfer", HttpMethod.POST, makeTransferEntity(transfer), String.class).getBody();
+		return transferStatus;
 	}
 
 	/**

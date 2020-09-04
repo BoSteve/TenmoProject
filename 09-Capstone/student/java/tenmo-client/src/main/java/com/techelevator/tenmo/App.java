@@ -137,7 +137,7 @@ public class App {
 		userToId = (Long.parseLong(choice));
 		choice = (String) console.getUserInput("\nEnter amount");
 		transferAmount = (new BigDecimal(choice).setScale(2, RoundingMode.HALF_UP));
-		transferServices.sendTransfer(userToId, transferAmount);
+		System.out.println(transferServices.sendTransfer(userToId, transferAmount));
 		choice = (String) console.getUserInput("\nEnter another ID of user if you would like to send more TE Bucks (0 to cancel)" );
 		}
 	}

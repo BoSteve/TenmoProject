@@ -35,11 +35,4 @@ public class UserController {
 		return user;
 	}
 	
-	@RequestMapping(path = "/me", method = RequestMethod.GET)
-	public User getCurrentUserId() {
-		User user = new User();
-		user.setUsername(SecurityUtils.getCurrentUsername().get());
-		user.setId((long)userDAO.findIdByUsername(SecurityUtils.getCurrentUsername().get()));
-		return user;
-	}
 }
