@@ -23,7 +23,7 @@ public class UserController {
 		List<User> userList = userDAO.findAll();
 		User user = new User();
 		for (User thisUser : userList) {
-			if (thisUser.getId().equals((long) (id))) {
+			if (thisUser.getId().equals((long)(id))) {
 				user.setId(thisUser.getId());
 				user.setUsername(thisUser.getUsername());
 				break;
