@@ -89,18 +89,25 @@ public class App {
 	}
 
 	private void displayTransferSummaryBanner() {
+		Transfer[] transferDisplay = transferServices.allTransfers(currentUser.getToken(), currentUser.getUser().getId());
 		System.out.println("--------------------------------------");
 		System.out.println("Transfers");
 		System.out.printf("%-8s %-20s %-20s %-1s", "ID", "From", "To", "Amount");
 		System.out.println("--------------------------------------");
+		for (Transfer thisTransfer : transferDisplay) {
+//			System.out.printf("%-8s %-20s %-20s %-1s", transferServices.historyOfTransfers(), transferServices.
+		}
+
+		
+		
 	}
 	
 	private void displayTransferSummary() {
-		
+		Transfer[] transferDisplay = transferServices.allTransfers(currentUser.getToken(), currentUser.getUser().getId());
 		for (Transfer thisTransfer : transferServices.historyOfTransfers()) {
-			System.out.printf("%-8s %-20s %-20s %-1s", 
-					thisTransfer.getTransferId(),
-					thisTransfer.getUserFrom(),
+//			System.out.printf("%-8s %-20s %-20s %-1s", 
+//					thisTransfer.getTransferId(),
+//					thisTransfer.getUserFrom(),
 		}
 		
 	}

@@ -8,8 +8,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
+import com.techelevator.services.AuctionServiceException;
 import com.techelevator.tenmo.models.Transfer;
 
 public class TransferServices {
@@ -40,6 +42,18 @@ public class TransferServices {
 				.getBody();
 		return transfer;
 
+	}
+	
+	public Transfer[] allTransfers(String token, Integer integer) {
+		Transfer[] tArray = null;
+		try {
+		tArray = restTemplate.exchange(BASE_URL + "transfer", HttpMethod.GET, makeAuthEntity(), Transfer[].class).getBody();
+	  } catch (RestClientResponseException ex) {
+         System.out.println(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
+      }
+		
+		
+		return tArray;
 	}
 
 	public List<Transfer> historyOfTransfers() {
