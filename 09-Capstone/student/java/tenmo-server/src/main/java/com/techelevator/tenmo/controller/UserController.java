@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.techelevator.tenmo.dao.UserDAO;
 import com.techelevator.tenmo.model.User;
-import com.techelevator.tenmo.security.SecurityUtils;
 
 @PreAuthorize("isAuthenticated()")
 @RestController

@@ -89,10 +89,10 @@ public class App {
 	private void viewTransferHistory() {
 		displayTransferSummaryBanner();
 		displayTransferSummary();
-		String choice = (String) console.getUserInput("\nPlease enter transfer ID to view details (0 to cancel)" );
+		String choice = (String) console.getUserInput("\nPlease enter transfer ID to view details (0 to cancel): " );
 		while (!choice.equals("0")) {
 			displayTransferDetails(transferServices.getTransferById(Long.parseLong(choice)));
-			choice = (String) console.getUserInput("\nPlease enter another transfer ID to view details (0 to cancel)" );
+			choice = (String) console.getUserInput("\nPlease enter another transfer ID to view details (0 to cancel): " );
 		}
 	}
 
@@ -132,13 +132,13 @@ public class App {
 		Long userToId = null;
 		BigDecimal transferAmount = null;
 		displayRegisteredUsers();
-		String choice = (String) console.getUserInput("\nEnter ID of user you are sending to (0 to cancel)" );
+		String choice = (String) console.getUserInput("\nEnter ID of user you are sending to (0 to cancel): " );
 		while (!choice.equals("0")) {
 		userToId = (Long.parseLong(choice));
 		choice = (String) console.getUserInput("\nEnter amount");
 		transferAmount = (new BigDecimal(choice).setScale(2, RoundingMode.HALF_UP));
 		System.out.println(transferServices.sendTransfer(userToId, transferAmount));
-		choice = (String) console.getUserInput("\nEnter another ID of user if you would like to send more TE Bucks (0 to cancel)" );
+		choice = (String) console.getUserInput("\nEnter another ID of user if you would like to send more TE Bucks (0 to cancel): " );
 		}
 	}
 

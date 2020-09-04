@@ -5,15 +5,11 @@ import java.math.RoundingMode;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.techelevator.tenmo.dao.AccountsDAO;
@@ -58,7 +54,7 @@ public class TransferController {
 		BigDecimal currentBalance = accountsDAO.accountBalanceByAccountId(currentAccountId);
 
 		try {
-			if (currentBalance.doubleValue() <= transferAmount.doubleValue() || currentAccountId == accountToId
+			if (currentBalance.doubleValue() < transferAmount.doubleValue() || currentAccountId == accountToId
 					|| transferAmount.doubleValue() <= 0) {
 				throw new InsufficientFundsException();
 			} else {
