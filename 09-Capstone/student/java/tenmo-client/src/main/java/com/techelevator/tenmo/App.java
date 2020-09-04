@@ -9,6 +9,7 @@ import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
 import java.util.List;
 import com.techelevator.tenmo.services.TransferServices;
+import com.techelevator.tenmo.services.UserService;
 import com.techelevator.view.ConsoleService;
 
 public class App {
@@ -35,7 +36,7 @@ public class App {
 	private AuthenticationService authenticationService;
 	private AccountService accountService = new AccountService(API_BASE_URL);
 	private TransferServices transferServices = new TransferServices(API_BASE_URL);
-	private User user;
+	private UserService userService = new UserService(API_BASE_URL);
 	
 	public static void main(String[] args) {
 		App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL));
@@ -103,12 +104,12 @@ public class App {
 	}
 	
 	private void displayTransferSummary() {
-		Transfer[] transferDisplay = transferServices.allTransfers(currentUser.getToken(), currentUser.getUser().getId());
-		for (Transfer thisTransfer : transferServices.historyOfTransfers()) {
+//		Transfer[] transferDisplay = transferServices.allTransfers(currentUser.getToken(), currentUser.getUser().getId());
+//		for (Transfer thisTransfer : transferServices.historyOfTransfers()) {
 //			System.out.printf("%-8s %-20s %-20s %-1s", 
 //					thisTransfer.getTransferId(),
 //					thisTransfer.getUserFrom(),
-		}
+//		}
 		
 	}
 	
@@ -175,6 +176,7 @@ public class App {
 				currentUser = authenticationService.login(credentials);
 				this.accountService.setToken(currentUser.getToken());
 				this.transferServices.setToken(currentUser.getToken());
+				this.userService.setToken(currentUser.getToken());
 			} catch (AuthenticationServiceException e) {
 				System.out.println("LOGIN ERROR: " + e.getMessage());
 				System.out.println("Please attempt to login again.");

@@ -16,21 +16,27 @@ public class UserService {
 
 	public UserService(String url) {
 		this.BASE_URL = url;
-		
+
 	}
-		public User getUserById(String token, long id) {
-			User user = new User();
-			try {
-			user = restTemplate.exchange(BASE_URL + "users", HttpMethod.GET, makeAuthEntity(), User.class).getBody();
-			 } catch (RestClientResponseException ex) {
-		         System.out.println(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
+
+	public User getUserById(long id) {
+		User user = new User();
+		try {
+			user = restTemplate.exchange(BASE_URL + "users" + id, HttpMethod.GET, makeAuthEntity(), User.class).getBody();
+		} catch (RestClientResponseException ex) {
+			System.out.println(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
 		}
-			return user;
-		}
-		private HttpEntity<Object> makeAuthEntity() {
-			HttpHeaders headers = new HttpHeaders();
-			headers.setBearerAuth(this.token);
-			HttpEntity<Object> entity = new HttpEntity<>(headers);
-			return entity;
-		}
+		return user;
+	}
+
+	private HttpEntity<Object> makeAuthEntity() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setBearerAuth(this.token);
+		HttpEntity<Object> entity = new HttpEntity<>(headers);
+		return entity;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
 }

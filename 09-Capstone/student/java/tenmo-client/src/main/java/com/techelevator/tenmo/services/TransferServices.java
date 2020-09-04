@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
-import com.techelevator.services.AuctionServiceException;
 import com.techelevator.tenmo.models.Transfer;
 
 public class TransferServices {
